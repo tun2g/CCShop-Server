@@ -32,7 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-    origin:"*"
+    origin:"*",
+    exposedHeaders: 'Authorization'
 }))
 
 const authRoute = require("./Routes/User.router");

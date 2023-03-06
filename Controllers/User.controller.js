@@ -1,7 +1,6 @@
 const creareError=require('http-errors')
 const User=require('../Models/User.model')
 const {userValidation}=require('../Helpers/validation')
-const {signAccessToken}=require('../Helpers/middleware')
 const JWT=require('jsonwebtoken')
 const refreshTokens=[]
 
@@ -13,7 +12,7 @@ const userController={
                 id: user._id,
             },
             process.env.JWT_ACCESS_KEY,
-            { expiresIn: time }
+            { expiresIn: '100000s' }
         );
     },
 
@@ -90,10 +89,6 @@ const userController={
     userLogin:async(req,res,next)=>{
         try {
             const {email,password}=req.body
-            const {error}=userValidation(req.body)
-            if(error){
-                throw creareError(error.details[0].message)
-            }
 
             const user=await User.findOne({email})
             console.log(user)
@@ -119,8 +114,13 @@ const userController={
     // RETURN API
 
     allUser:async(req,res,next)=>{
-        const listUsers=await User.find()
+        try {
+            const listUsers=await User.find()
         return res.json(listUsers)
+        } catch (error) {
+            res.json({status:500,message:error.details[0].message})
+        }
+        
     },
     findUser:async(req,res,next)=>{
         try {
