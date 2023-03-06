@@ -4,55 +4,9 @@ const {userValidation}=require('../Helpers/validation')
 const JWT=require('jsonwebtoken')
 const redis=require('../Services/redis')
 
-const refreshTokens=[]
-
+const JWTController=require('./JWT.controller')
 const userController={
-    //GENERATE ACCESS TOKEN
-    generateAccessToken: (user, time = "10m") => {
-        return JWT.sign(
-            {
-                id: user._id,
-            },
-            process.env.JWT_ACCESS_KEY,
-            { expiresIn: '30s' }
-        );
-    },
-
-    //GENERATE REFRESH TOKEN
-    generateRefreshToken: (user) => {
-        return JWT.sign(
-            {
-                id: user._id,
-            },
-            process.env.JWT_REFRESH_KEY,
-            { expiresIn: "30d" }
-        );
-    },
-
-    requestRefreshToken: async (req, res, next) => {
-        const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
-            return res.status(200).json("Bạn không có quyền truy cập");
-        }
-        if (!refreshTokens.includes(refreshToken)) {
-            return res.status(200).json("Refresh token không tồn tại hoặc hết hạn!");
-        }
-        JWT.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
-            if (err) {
-                return res.status(200).json(err);
-            }
-
-            refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-            const newAccessToken = authController.generateAccessToken(user);
-            const newRefreshToken = authController.generateRefreshToken(user);
-            refreshTokens.push(newRefreshToken);
-            res.cookie("refreshToken", newRefreshToken, {
-                path: "/",
-            });
-            res.status(200).json({ accessToken: newAccessToken });
-        });
-    },
-
+   
 
     // LOGIN & REGISTER
     userRegister: async(req,res,next)=>{
@@ -91,9 +45,7 @@ const userController={
     userLogin:async(req,res,next)=>{
         try {
             const {email,password}=req.body
-            redis.connect() 
             const user=await User.findOne({email})
-            console.log(user)
             if(!user){
                 throw res.json({status:500,message:
                     `This email is not exist`
@@ -104,11 +56,9 @@ const userController={
             if(!isValid){
                 throw creareError.Unauthorized()
             }
-            const accessToken=await userController.generateAccessToken(user)
-            console.log("aaa",user.email)
+            const accessToken=await JWTController.generateAccessToken(user)
             redis.set(user.email,accessToken,redis.print)
-            redis.quit()
-            res.json({status:'Login sucessfully',token:accessToken})
+            res.json({status:'Login sucessfully',token:accessToken,user:user})
 
         } catch (error) {
             next(error)

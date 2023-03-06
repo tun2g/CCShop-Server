@@ -1,6 +1,7 @@
 const express = require('express');
 const creareError=require('http-errors');
 
+const redisRoute=require('./Routes/Redis.router')
 const postRoute=require('./Routes/Post.router')
 const cors=require('cors')
 const app=express();
@@ -21,6 +22,7 @@ app.use(cors({
 app.get('/',(req,res,next)=>{
     res.send("home page").status(200)
 })
+app.use('/redis',redisRoute)
 app.use('/post',postRoute)
 
 app.use((req,res,next)=>{
