@@ -2,6 +2,8 @@ const creareError=require('http-errors')
 const User=require('../Models/User.model')
 const {userValidation}=require('../Helpers/validation')
 const JWT=require('jsonwebtoken')
+const redis=require('../Services/redis')
+
 const refreshTokens=[]
 
 const userController={
@@ -12,7 +14,7 @@ const userController={
                 id: user._id,
             },
             process.env.JWT_ACCESS_KEY,
-            { expiresIn: '100000s' }
+            { expiresIn: '30s' }
         );
     },
 
@@ -89,7 +91,7 @@ const userController={
     userLogin:async(req,res,next)=>{
         try {
             const {email,password}=req.body
-
+            redis.connect() 
             const user=await User.findOne({email})
             console.log(user)
             if(!user){
@@ -103,6 +105,9 @@ const userController={
                 throw creareError.Unauthorized()
             }
             const accessToken=await userController.generateAccessToken(user)
+            console.log("aaa",user.email)
+            redis.set(user.email,accessToken,redis.print)
+            redis.quit()
             res.json({status:'Login sucessfully',token:accessToken})
 
         } catch (error) {
