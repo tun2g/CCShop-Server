@@ -1,9 +1,8 @@
 const creareError=require('http-errors')
+
 const User=require('../Models/User.model')
 const {userValidation}=require('../Helpers/validation')
-const JWT=require('jsonwebtoken')
 const redis=require('../Services/redis')
-
 const JWTController=require('./JWT.controller')
 const userController={
    
@@ -57,7 +56,24 @@ const userController={
                 throw creareError.Unauthorized()
             }
             const accessToken=await JWTController.generateAccessToken(user)
+            const refreshToken=await JWTController.generateRefreshToken(user)
+            
             redis.set(user.email,accessToken,redis.print)
+            
+            res.cookie("refreshtoken", refreshToken,{
+                path: "/",
+                maxAge:1000*60*60*24*30,
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+            })
+           
+
+            redis.rPush('refresh-tokens',refreshToken,(err, reply) => {
+                if (err) throw err;
+                console.log(reply); // số lượng phần tử trong mảng
+            });
+
             res.json({status:'Login sucessfully',token:accessToken,user:user})
 
         } catch (error) {

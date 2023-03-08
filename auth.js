@@ -5,6 +5,8 @@ const creareError=require('http-errors')
 require("dotenv").config();
 
 const app = express();
+
+const JWTRoute=require('./Routes/JWT.router')
 const db=require('./Helpers/config')
 db.connect()
 
@@ -32,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-    origin:"*",
+    origin:"http://localhost:3000",
     exposedHeaders: 'Authorization'
 }))
 
@@ -43,6 +45,7 @@ app.get("/", (req, res, next) => {
     res.end("hello world\n");
 });
 
+app.use("/refresh",JWTRoute)
 app.use("/user", authRoute);
 
 

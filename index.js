@@ -1,23 +1,27 @@
 const express = require('express');
 const creareError=require('http-errors');
+const cookieParser=require('cookie-parser')
 
 const redisRoute=require('./Routes/Redis.router')
 const postRoute=require('./Routes/Post.router')
+
 const cors=require('cors')
 const app=express();
 
 require('dotenv').config();
-const db=require('./Helpers/config')
+const db=require('./Helpers/config');
 db.connect()
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}));
+app.use(cookieParser())
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
     origin:"*",
     exposedHeaders: 'Authorization'
 }))
+
 
 app.get('/',(req,res,next)=>{
     res.send("home page").status(200)
