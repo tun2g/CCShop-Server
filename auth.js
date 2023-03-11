@@ -29,24 +29,27 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use(cors({
+    origin:"http://localhost:3000",
+    exposedHeaders: 'Authorization',
+    credentials: true,
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(cors({
-    origin:"http://localhost:3000",
-    exposedHeaders: 'Authorization'
-}))
 
 const authRoute = require("./Routes/User.router");
+const redisRoute=require('./Routes/Redis.router')
 
 app.get("/", (req, res, next) => {
+    console.log(req.cookies)
     res.writeHead(200);
     res.end("hello world\n");
 });
-
 app.use("/refresh",JWTRoute)
 app.use("/user", authRoute);
+app.use("/redis",redisRoute)
 
 
 app.use((req,res,next)=>{

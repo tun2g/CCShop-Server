@@ -3,7 +3,8 @@ const client=require('../Services/redis')
 const redisController={
     setKey:(req, res,next) => {
         try {
-            const {value,key}=req.body;        
+            const {value}=req.body
+            const key=req.cookies.email
             client.set(key, value, redis.print);
             next()
         } catch (error) {
@@ -13,7 +14,7 @@ const redisController={
     },
     getKey: async(req,res,next)=>{
         try {
-            const {key}=req.body
+            const key=req.cookies.email
             const token = await client.get(key)
             return res.json({
                 status:200,

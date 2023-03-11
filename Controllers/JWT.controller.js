@@ -41,7 +41,6 @@ const JWTController={
             if (err) {
                 return res.status(200).json(err);
             }
-
             refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
             const newAccessToken = JWTController.generateAccessToken(user);
             const newRefreshToken = JWTController.generateRefreshToken(user);

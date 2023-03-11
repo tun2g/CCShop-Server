@@ -3,7 +3,7 @@ const route=express.Router();
 
 const redisController=require('../Controllers/Redis.controller')
 
-route.post('/get',redisController.getKey)
-route.post('/set',redisController.setKey)
+route.get("/get",redisController.getKey)
+route.post("/set",redisController.setKey)
 
 module.exports=route

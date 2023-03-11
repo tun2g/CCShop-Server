@@ -67,7 +67,13 @@ const userController={
                 secure: true,
                 sameSite: 'strict',
             })
-           
+            res.cookie("email", user.email,{
+                path: "/",
+                maxAge:1000*60,
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+            })
 
             redis.rPush('refresh-tokens',refreshToken,(err, reply) => {
                 if (err) throw err;
