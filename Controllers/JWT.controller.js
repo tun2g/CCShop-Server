@@ -3,7 +3,7 @@ const redis=require('../Services/redis')
 
 const JWTController={
 
-    generateAccessToken: (user,time="30s") => {
+    generateAccessToken: (user,time="60s") => {
         return JWT.sign(
             {
                 id: user._id,
@@ -37,25 +37,24 @@ const JWTController={
         if (!refreshTokens.includes(refreshToken)) {
             return res.json("Refresh token không tồn tại hoặc hết hạn!");
         }
-        JWT.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
+        const email =await redis.get(refreshToken)
+        console.log(email,refreshToken)
+        
+        JWT.verify(refreshToken, process.env.JWT_REFRESH_KEY, async(err, user) => {
             if (err) {
                 return res.status(200).json(err);
             }
-            refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-            const newAccessToken = JWTController.generateAccessToken(user);
-            const newRefreshToken = JWTController.generateRefreshToken(user);
             
-            redis.rPush('refresh-tokens',newRefreshToken,(err,reply)=>{
-                if(err){
-                    console.log(err)
-                }
-            })
-            
-            res.cookie("refreshtoken", newRefreshToken, {
+            res.cookie("email",email,{
                 path: "/",
+                maxAge:1000*60,
                 httpOnly: true,
-            });
-            res.status(200).json({ accessToken: newAccessToken });
+                secure: true,
+                sameSite: 'strict',
+            })
+            const newAccessToken = JWTController.generateAccessToken(user);
+            
+            res.status(200).json({ accessToken: newAccessToken});
         });
     },
 }

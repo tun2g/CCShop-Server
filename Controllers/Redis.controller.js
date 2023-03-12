@@ -5,7 +5,7 @@ const redisController={
         try {
             const {value}=req.body
             const key=req.cookies.email
-            client.set(key, value, redis.print);
+            client.set(key, value,"EX",60, redis.print);
             next()
         } catch (error) {
             next(error)

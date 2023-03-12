@@ -58,7 +58,7 @@ const userController={
             const accessToken=await JWTController.generateAccessToken(user)
             const refreshToken=await JWTController.generateRefreshToken(user)
             
-            redis.set(user.email,accessToken,redis.print)
+            redis.set(user.email,accessToken,"EX",60,redis.print)
             
             res.cookie("refreshtoken", refreshToken,{
                 path: "/",
@@ -74,8 +74,10 @@ const userController={
                 secure: true,
                 sameSite: 'strict',
             })
-
-            redis.rPush('refresh-tokens',refreshToken,(err, reply) => {
+            
+            redis.set(refreshToken,user.email,60*60*24*30,redis.print)
+            console.log("re",refreshToken)
+            redis.rPush('refresh-tokens',refreshToken,"EX",60*60*24*30,(err, reply) => {
                 if (err) throw err;
                 console.log(reply); // số lượng phần tử trong mảng
             });
