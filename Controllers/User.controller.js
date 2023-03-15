@@ -1,16 +1,19 @@
 const creareError=require('http-errors')
+const bcrypt=require('bcrypt')
 
 const User=require('../Models/User.model')
 const {userValidation}=require('../Helpers/validation')
 const redis=require('../Services/redis')
 const JWTController=require('./JWT.controller')
+const { sendVerificationEmail } = require('../Services/nodemailer')
+
+
 const userController={
-   
 
     // LOGIN & REGISTER
     userRegister: async(req,res,next)=>{
         try {
-            const {username,email,password}=req.body
+            let {username,email,password}=req.body
             const {error}=userValidation({username,email,password})
             if(error){
                 throw creareError(error.details[0].message)
@@ -22,7 +25,9 @@ const userController={
                     `This email is ready been registered`
                 )
             }
-    
+            const salt=await bcrypt.genSalt(10)
+            const hashedPassword=await bcrypt.hash(password,salt)
+            password=hashedPassword
             const user =new User({
                 username,
                 email,
@@ -30,10 +35,10 @@ const userController={
             }) 
             const savedUser=await user.save()
             console.log(user)
-
+            sendVerificationEmail(user)
             return res.json({
-                status:"Success",
-                element:savedUser
+                status:500,
+                element:user
             })
             
         } catch (error) {
@@ -45,13 +50,13 @@ const userController={
         try {
             const {email,password}=req.body
             const user=await User.findOne({email})
+
             if(!user){
                 throw res.json({status:500,message:
                     `This email is not exist`
             })
             }
-            const isValid=await user.isRightPassword(password)
-
+            const isValid=await user.isRightPassword(password)            
             if(!isValid){
                 throw creareError.Unauthorized()
             }
@@ -87,6 +92,12 @@ const userController={
         } catch (error) {
             next(error)
         }
+    },
+
+    userLogout:(req,res)=>{
+        res.cookie('email', '', { expires: new Date(0) }); // Xóa cookie email
+        res.cookie('refreshtoken', '', { expires: new Date(0) }); // Xóa cookie refreshToken
+        res.send('Logged out successfully');
     },
 
 

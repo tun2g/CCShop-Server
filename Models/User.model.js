@@ -18,25 +18,29 @@ const UserSchema= new mongoose.Schema({
         type:String,
         require:true
     },
+    isVerified: { 
+        type: Boolean, 
+        default: false 
+    }
 });
 
-UserSchema.pre('save',async function(next){
-    try{
-        // const salt = Date.now().toString(16);
-        // const pwSalt = this.password + salt;
-        // const hashedPassword = cryptoJS.SHA3(pwSalt, { outputLength: process.env.HASH_LENGTH * 4 }).toString(cryptoJS.enc.Hex);
-        // this.password=hashedPassword
+// UserSchema.pre('save',async function(next){
+//     try{
+//         // const salt = Date.now().toString(16);
+//         // const pwSalt = this.password + salt;
+//         // const hashedPassword = cryptoJS.SHA3(pwSalt, { outputLength: process.env.HASH_LENGTH * 4 }).toString(cryptoJS.enc.Hex);
+//         // this.password=hashedPassword
 
         
-        const salt=await bcrypt.genSalt(10)
-        const hashedPassword=await bcrypt.hash(this.password,salt)
-        this.password=hashedPassword
-        next();
-    }
-    catch (err){
-        next(err)
-    }
-})
+//         const salt=await bcrypt.genSalt(10)
+//         const hashedPassword=await bcrypt.hash(this.password,salt)
+//         this.password=hashedPassword
+//         next();
+//     }
+//     catch (err){
+//         next(err)
+//     }
+// })
 
 UserSchema.methods.isRightPassword=async function(password){
     try {

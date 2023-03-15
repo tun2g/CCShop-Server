@@ -9,9 +9,7 @@ route.post('/register',userController.userRegister)
 
 route.post('/login',userController.userLogin)
 
-route.post('/logout',(req,res,next)=>{
-    res.send("logout");
-})
+route.get('/logout',userController.userLogout)
 
 route.post('/refresh',(req,res,next)=>{
     res.send("refresh");

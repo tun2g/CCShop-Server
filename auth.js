@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors=require('cors')
+const bodyParser=require('body-parser')
 const creareError=require('http-errors')
 require("dotenv").config();
 
@@ -39,8 +40,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
+const veryfyRoute=require('./Routes/Nodemailer.router')
 const authRoute = require("./Routes/User.router");
-const redisRoute=require('./Routes/Redis.router')
+const redisRoute=require('./Routes/Redis.router');
 
 app.get("/", (req, res, next) => {
     console.log(req.cookies)
@@ -50,7 +52,7 @@ app.get("/", (req, res, next) => {
 app.use("/refresh",JWTRoute)
 app.use("/user", authRoute);
 app.use("/redis",redisRoute)
-
+app.use("/verify",veryfyRoute)
 
 app.use((req,res,next)=>{
     next(creareError.NotFound("This route does not exist"))
