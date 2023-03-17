@@ -3,7 +3,7 @@ const redis=require('../Services/redis')
 
 const JWTController={
 
-    generateAccessToken: (user,time="60s") => {
+    generateAccessToken: (user,time="1800s") => {
         return JWT.sign(
             {
                 id: user._id,
@@ -47,7 +47,7 @@ const JWTController={
             
             res.cookie("email",email,{
                 path: "/",
-                maxAge:1000*60,
+                maxAge:1000*process.env.JWT_ACCESS_KEY_TIME,
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',

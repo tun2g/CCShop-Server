@@ -35,7 +35,9 @@ const userController={
             }) 
             const savedUser=await user.save()
             console.log(user)
+
             sendVerificationEmail(user)
+            
             return res.json({
                 status:500,
                 element:user
@@ -63,7 +65,7 @@ const userController={
             const accessToken=await JWTController.generateAccessToken(user)
             const refreshToken=await JWTController.generateRefreshToken(user)
             
-            redis.set(user.email,accessToken,"EX",60,redis.print)
+            redis.set(user.email,accessToken,"EX",process.env.JWT_ACCESS_KEY_TIME,redis.print)
             
             res.cookie("refreshtoken", refreshToken,{
                 path: "/",
@@ -74,7 +76,7 @@ const userController={
             })
             res.cookie("email", user.email,{
                 path: "/",
-                maxAge:1000*60,
+                maxAge:1000*process.env.JWT_ACCESS_KEY_TIME,
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
@@ -100,7 +102,23 @@ const userController={
         res.send('Logged out successfully');
     },
 
-
+    userResetPassword:async(req,res)=>{
+        try {
+            let {email,password}=req.body
+            const updateUser=await User.findOne({email})
+            
+            const salt=await bcrypt.genSalt(10)
+            const hashedPassword=await bcrypt.hash(password,salt)
+            
+            password=hashedPassword
+            
+            updateUser.password=password
+            
+            await updateUser.save()
+        } catch (error) {
+            console.log(error)
+        }
+    },
     // RETURN API
 
     allUser:async(req,res,next)=>{

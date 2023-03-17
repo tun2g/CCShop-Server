@@ -14,7 +14,7 @@ route.get('/logout',userController.userLogout)
 route.post('/refresh',(req,res,next)=>{
     res.send("refresh");
 })
-
+route.post('/reset-password',userController.userResetPassword)
 
 // API
 route.get('/all',userController.allUser)
