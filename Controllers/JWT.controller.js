@@ -54,7 +54,7 @@ const JWTController={
             })
             const newAccessToken = JWTController.generateAccessToken(user);
             
-            res.status(200).json({ accessToken: newAccessToken});
+            res.status(200).json({ accessToken: newAccessToken,email});
         });
     },
 }

@@ -3,11 +3,15 @@ const creareError=require('http-errors');
 const cookieParser=require('cookie-parser')
 
 const postRoute=require('./Routes/Post.router')
-
+const shopRoute=require('./Routes/Shop.router')
+const productRoute=require('./Routes/Product.router')
+const fileRoute=require('./Routes/File.route')
 const cors=require('cors')
 const app=express();
 
 require('dotenv').config();
+
+
 const db=require('./Helpers/config');
 db.connect()
 
@@ -22,14 +26,20 @@ app.use(cors({
 }))
 
 
+
+
 app.get('/',(req,res,next)=>{
     res.send("home page").status(200)
 })
 app.use('/post',postRoute)
-
+app.use('/shop',shopRoute)
+app.use('/file',fileRoute)
+app.use('/product',productRoute)
 app.use((req,res,next)=>{
     next(creareError.NotFound("This route does not exist"))
 })
+
+
 
 app.use((err,req,res,next)=>{
     res.json({

@@ -144,7 +144,19 @@ const userController={
 
         }
         
+    },
+
+    //
+    isShop:async(req,res)=>{
+        try {
+            const {email}=req.body
+            const user=await User.findOne({email})
+            res.json({isShop:user.isShop})
+        } catch (error) {
+            
+        }
     }
+
 }
 
 module.exports=userController

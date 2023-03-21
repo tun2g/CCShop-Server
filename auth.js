@@ -7,7 +7,14 @@ require("dotenv").config();
 
 const app = express();
 
+// Route
 const JWTRoute=require('./Routes/JWT.router')
+const shopRoute=require('./Routes/Shop.router')
+const veryfyRoute=require('./Routes/Nodemailer.router')
+const authRoute = require("./Routes/User.router");
+const redisRoute=require('./Routes/Redis.router');
+
+
 const db=require('./Helpers/config')
 db.connect()
 
@@ -40,9 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-const veryfyRoute=require('./Routes/Nodemailer.router')
-const authRoute = require("./Routes/User.router");
-const redisRoute=require('./Routes/Redis.router');
+
 
 app.get("/", (req, res, next) => {
     console.log(req.cookies)
@@ -53,7 +58,7 @@ app.use("/refresh",JWTRoute)
 app.use("/user", authRoute);
 app.use("/redis",redisRoute)
 app.use("/verify",veryfyRoute)
-
+app.use("/shop",shopRoute)
 app.use((req,res,next)=>{
     next(creareError.NotFound("This route does not exist"))
 })
