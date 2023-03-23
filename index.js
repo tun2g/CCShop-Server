@@ -1,6 +1,8 @@
 const express = require('express');
 const creareError=require('http-errors');
 const cookieParser=require('cookie-parser')
+const helmet= require('helmet')
+
 
 const postRoute=require('./Routes/Post.router')
 const shopRoute=require('./Routes/Shop.router')
@@ -15,6 +17,7 @@ require('dotenv').config();
 const db=require('./Helpers/config');
 db.connect()
 
+app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser())

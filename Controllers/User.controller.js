@@ -34,8 +34,7 @@ const userController={
                 password
             }) 
             const savedUser=await user.save()
-            console.log(user)
-
+            
             sendVerificationEmail(user)
             
             return res.json({
@@ -96,7 +95,7 @@ const userController={
         }
     },
 
-    userLogout:(req,res)=>{
+    userLogout: async(req,res)=>{
         res.cookie('email', '', { expires: new Date(0) }); // Xóa cookie email
         res.cookie('refreshtoken', '', { expires: new Date(0) }); // Xóa cookie refreshToken
         res.send('Logged out successfully');
@@ -146,6 +145,17 @@ const userController={
         
     },
 
+    getIdByEmail:async(req,res)=>{
+        
+        try {
+            const {email}=req.body
+            const user=await User.findOne({email})
+            res.json({isShop:user._id})
+        } catch (error) {
+            
+        }
+
+    },
     //
     isShop:async(req,res)=>{
         try {

@@ -16,6 +16,8 @@ route.post('/reset-password',userController.userResetPassword)
 // API
 route.get('/all',userController.allUser)
 
+route.get('/get-id',userController.getIdByEmail)
+
 route.get('/auth/:id',userController.findUser)
 
 // OTHER

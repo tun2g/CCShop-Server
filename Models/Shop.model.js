@@ -14,8 +14,6 @@ const ShopSchema= new mongoose.Schema({
     },
     address:{
         type:String,
-        lowercase:true,
-        unique:true,
         require:true
     },
     phonenumber:{

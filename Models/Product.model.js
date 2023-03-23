@@ -13,9 +13,24 @@ const ProductSchema= new mongoose.Schema({
         type:String,
         require:true,
     },
+    information:{
+        type:String
+    },
     description:{
         type:String,
         require:true,
+    },
+    detail:{
+        type:String,
+    },
+    descriptiondetail:{
+        type:String,
+    },
+    size:{
+        type:String,
+    },
+    color:{
+        type:String,
     },
     price:{
         type:Number,
@@ -23,6 +38,10 @@ const ProductSchema= new mongoose.Schema({
     },
     quantity:{
         type:Number,
+        require:true,
+    },
+    email:{
+        type:String,
         require:true,
     }
 });

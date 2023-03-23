@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const cors=require('cors')
 const bodyParser=require('body-parser')
 const creareError=require('http-errors')
+const helmet=require('helmet')
 require("dotenv").config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use(helmet())
 app.use(cors({
     origin:"http://localhost:3000",
     exposedHeaders: 'Authorization',

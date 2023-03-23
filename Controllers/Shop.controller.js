@@ -4,7 +4,7 @@ const User=require('../Models/User.model')
 const shopController={
     registerShop:async (req,res)=>{
         try {
-            const {email,shopname,phonenumber,address}=req.body
+            let {email,shopname,phonenumber,address}=req.body
             const shop=new Shop({
                 email,shopname,phonenumber,address
             })
@@ -17,13 +17,13 @@ const shopController={
         }
     },
 
-    postProduct:async(req,res)=>{
+    changeInfomationShop:async(req,res)=>{
         try {
-
+            
         } catch (error) {
             
         }
-    }
+    },
 
 }
 
