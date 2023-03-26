@@ -156,6 +156,17 @@ const userController={
         }
 
     },
+    getEmailById:async(req,res)=>{
+        try {
+            const {_id}=req.body
+            const user=await User.findOne({_id})
+            res.json({email:user.email})
+
+        } catch (error) {
+            
+        }
+    },
+
     //
     isShop:async(req,res)=>{
         try {

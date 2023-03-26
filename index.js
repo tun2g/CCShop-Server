@@ -3,8 +3,8 @@ const creareError=require('http-errors');
 const cookieParser=require('cookie-parser')
 const helmet= require('helmet')
 
-
-const postRoute=require('./Routes/Post.router')
+const cartRoute=require('./Routes/Cart.router')
+const reviewProductRoute=require('./Routes/ReviewProduct.router')
 const shopRoute=require('./Routes/Shop.router')
 const productRoute=require('./Routes/Product.router')
 const fileRoute=require('./Routes/File.route')
@@ -34,10 +34,12 @@ app.use(cors({
 app.get('/',(req,res,next)=>{
     res.send("home page").status(200)
 })
-app.use('/post',postRoute)
+app.use('/post',reviewProductRoute)
 app.use('/shop',shopRoute)
 app.use('/file',fileRoute)
 app.use('/product',productRoute)
+app.use('/cart',cartRoute)
+
 app.use((req,res,next)=>{
     next(creareError.NotFound("This route does not exist"))
 })

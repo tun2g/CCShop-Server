@@ -8,12 +8,11 @@ const productController={
         try {
             const product = new Product({
                 name: req.body.name,
-                key:req.body.prodkey,
                 price: req.body.price,
                 quantity: req.body.quantity,
                 description: req.body.description,
                 imageurl: req.body.file,
-                email:req.body.email
+                shopid:req.body.shopid,
             })
             product.save((err, savedProduct) => {
                 if (err) {
@@ -29,7 +28,9 @@ const productController={
     },
     updateProduct:async(req,res)=>{
         try {
-          
+            const updateProduct= await Product.findOneAndUpdate({_id},{$set:{
+                price,
+            }}, {} )     
         } catch (error) {
           
         }
@@ -61,14 +62,14 @@ const productController={
 
     getAllProductByShop:async(req,res)=>{
       try {
-        const email=req.params.shop
-        const listProducts=await Product.find({email})
+        const id=req.params.key
+        const listProducts=await Product.find({shopid:id})
         const list=listProducts.map(p=>{
             p.email=''
             delete p['email']
             return p          
         })
-        return res.json(list)
+        return res.send(list)
       } catch (error) {
           console.log(error)
           res.json({status:500,message:error.details[0].message})
@@ -76,8 +77,8 @@ const productController={
     },
     getProduct:async(req,res)=>{
       try {
-        const key=req.params.key
-        const product=await Product.findOne({key})
+        const _id=req.params.key
+        const product=await Product.findOne({_id})
         product.email=''
         delete product['email']
         return res.json(product)

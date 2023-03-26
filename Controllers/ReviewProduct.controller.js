@@ -1,6 +1,6 @@
-const Post =require('../Models/Post.model')
+const ReviewProduct =require('../Models/ReviewProduct.model')
 
-const postController={
+const reviewProductController={
     //POST
     createNewPost:(req,res)=>{
         try {
@@ -13,7 +13,7 @@ const postController={
     // API
     getAllPost:async(req,res)=>{
         try {
-            const listPosts=await Post.find()
+            const listPosts=await ReviewProduct.find()
             return res.json(listPosts)
         } catch (error) {
             console.log(error)
@@ -30,4 +30,4 @@ const postController={
     },
 }
 
-module.exports=postController
+module.exports=reviewProductController

@@ -20,6 +20,8 @@ route.get('/get-id',userController.getIdByEmail)
 
 route.get('/auth/:id',userController.findUser)
 
+route.get('/get-email',userController.getEmailById)
+
 // OTHER
 route.post('/is-shop',userController.isShop)
 

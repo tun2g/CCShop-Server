@@ -5,10 +5,6 @@ const ProductSchema= new mongoose.Schema({
         type:String,
         require:true
     },
-    key:{
-        type:String,
-        require:true,
-    },
     imageurl:{
         type:String,
         require:true,
@@ -40,9 +36,10 @@ const ProductSchema= new mongoose.Schema({
         type:Number,
         require:true,
     },
-    email:{
+    shopid:{
         type:String,
         require:true,
+        ref:'Shop'
     }
 });
 
