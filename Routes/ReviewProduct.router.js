@@ -1,9 +1,9 @@
 const express=require('express')
 const route=express.Router()
-const {authenticateToken}=require('../Services/middlewareJWT')
 const reviewProductController=require('../Controllers/ReviewProduct.controller')
 
+route.post('/:id',reviewProductController.postReview)
 
-route.get('/all',authenticateToken,reviewProductController.getAllPost)
+route.get('/get/:id',reviewProductController.getReviewByProduct)
 
 module.exports=route

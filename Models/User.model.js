@@ -8,6 +8,10 @@ const UserSchema= new mongoose.Schema({
         unique:true,
         require:true,
     },
+    introduction:{
+        type:String,
+        default:"Hãy Giới thiệu bản thân của bạn",
+    },
     email:{
         type:String,
         lowercase:true,
@@ -25,7 +29,15 @@ const UserSchema= new mongoose.Schema({
     isShop:{
         type:Boolean,
         default:false
-    }
+    },
+    avatar:{
+        type:String,
+        default:"https://res.cloudinary.com/doisii14t/image/upload/v1679876540/htyzwn2nejgz453hqsn1.jpg"
+    },
+    address:{
+        type:String,
+        default:"Cập nhật địa chỉ nhận hàng"
+    },
 });
 
 // UserSchema.pre('save',async function(next){

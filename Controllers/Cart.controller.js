@@ -61,13 +61,15 @@ const cartController={
             const listId = listCarts.map((p)=>{return p.productid})
             // 
             // Tìm các sản phẩm có ID nằm trong danh sách
-            const listProducts =await Product.find({ _id: { $in: listId } }).select() 
+            const list =await Cart.find({ userid,productid: { $in: listId } })
+                .populate("productid") 
             //
-
-            return res.send({cart:listCarts,product:listProducts})
+            
+            console.log(list)
+            return res.send(list)
 
         } catch (error) {
-            
+            console.log(error)
         }
 
     },

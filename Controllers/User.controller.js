@@ -61,6 +61,11 @@ const userController={
             if(!isValid){
                 throw creareError.Unauthorized()
             }
+
+            //xóa refresh token cũ trong redis
+            const rf=req.cookies?.refreshToken
+            rf&&redis.del(rf)
+
             const accessToken=await JWTController.generateAccessToken(user)
             const refreshToken=await JWTController.generateRefreshToken(user)
             
@@ -82,7 +87,6 @@ const userController={
             })
             
             redis.set(refreshToken,user.email,60*60*24*30,redis.print)
-            console.log("re",refreshToken)
             redis.rPush('refresh-tokens',refreshToken,"EX",60*60*24*30,(err, reply) => {
                 if (err) throw err;
                 console.log(reply); // số lượng phần tử trong mảng
@@ -117,6 +121,21 @@ const userController={
         } catch (error) {
             console.log(error)
         }
+    },
+
+
+    userUpdateOneField:async(req,res)=>{
+        try {
+            const {_id,field,value}=req.body
+            const updateUser=await User.findOne({_id})
+            updateUser[field]=value
+
+            await updateUser.save()    
+            res.send("success")
+        } catch (error) {
+            console.log(error)
+        }
+        
     },
     // RETURN API
 

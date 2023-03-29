@@ -52,7 +52,6 @@ app.use(cookieParser());
 
 
 app.get("/", (req, res, next) => {
-    console.log(req.cookies)
     res.writeHead(200);
     res.end("hello world\n");
 });

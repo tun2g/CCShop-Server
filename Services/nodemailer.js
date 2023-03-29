@@ -46,7 +46,6 @@ const sendOTPToEmail = async (req,res) => {
 // Gửi email xác nhận với token
 const sendVerificationEmail = async (user) => {
 
-    console.log("user",user)
     transporter.verify(function (error, success) {
       if (error) {
         console.log(error);
@@ -62,13 +61,12 @@ const sendVerificationEmail = async (user) => {
     await updateUser.save()
     
     const verificationLink = `http://localhost:20617/verify/verify-user-by-token/${token}`;
-    const name=updateUser?.username?.split(' ')[-1]
-    
+    const name=updateUser?.username?.split(' ')
     await transporter.sendMail({
       from: process.env.YOUR_EMAIL,
       to: user.email,
       subject: 'Verify your email address',
-      html: `<p>Hi ${name},</p>
+      html: `<p>Hi ${name[name.length-1]},</p>
       <p>Please click the following link to verify your email address:</p><p><a href="${verificationLink}">${verificationLink}</a></p>`,
     });
 
@@ -78,13 +76,11 @@ const sendVerificationEmail = async (user) => {
 const verifyUser = async (req,res) => {
     try {
       const token=req.params.token
-      console.log("token",token)
       JWT.verify(token, process.env.JWT_MAIL_KEY,async(err,user)=>{
         if(err)
         {
           return res.send("Token không tồn tại hoặc hết thời hạn");
         }
-        console.log("user",user)
         const updateUser=await User.findOne({email:user.email})
         updateUser.isVerified=true
   

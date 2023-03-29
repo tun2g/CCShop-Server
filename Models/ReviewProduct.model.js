@@ -1,17 +1,26 @@
 const mongoose=require('mongoose');
 const ReviewProductSchema= new mongoose.Schema({
-    email:{
-        type:String,
-        require:true
-    },
-    product:{
+    userid:{
         type:String,
         require:true,
+        ref:'User'
     },
-    price:{
+    productid:{
+        type:String,
+        require:true,
+        ref:'Product',
+    },
+    rating:{
         type:Number,
         require:true
     },
+    comment:{
+        type:String
+    },
+    isReacted:{
+        type:Boolean,
+        default:false,
+    }
 
 });
 

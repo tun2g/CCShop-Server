@@ -34,7 +34,7 @@ app.use(cors({
 app.get('/',(req,res,next)=>{
     res.send("home page").status(200)
 })
-app.use('/post',reviewProductRoute)
+app.use('/review',reviewProductRoute)
 app.use('/shop',shopRoute)
 app.use('/file',fileRoute)
 app.use('/product',productRoute)

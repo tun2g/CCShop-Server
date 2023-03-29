@@ -13,6 +13,8 @@ route.get('/logout',userController.userLogout)
 
 route.post('/reset-password',userController.userResetPassword)
 
+route.post('/update-one',userController.userUpdateOneField)
+
 // API
 route.get('/all',userController.allUser)
 

@@ -38,7 +38,6 @@ const JWTController={
             return res.json("Refresh token không tồn tại hoặc hết hạn!");
         }
         const email =await redis.get(refreshToken)
-        console.log(email,refreshToken)
         
         JWT.verify(refreshToken, process.env.JWT_REFRESH_KEY, async(err, user) => {
             if (err) {
