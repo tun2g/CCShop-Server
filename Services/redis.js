@@ -1,9 +1,15 @@
 const redis = require('redis');
+const util = require('util')
+const promisify=util.promisify
+
 const client = redis.createClient({
   host: '127.0.0.1',
   port: 6379
 });
+
+
 client.connect()
+
 client.on('connect', () => {
   console.log('Redis client connected');
 });
@@ -11,7 +17,9 @@ client.on('connect', () => {
 client.on('error', (err) => {
   console.log('Something went wrong ' + err);
 }
+
 );
+
 
 module.exports = client;
 

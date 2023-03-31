@@ -4,9 +4,11 @@ const cors=require('cors')
 const bodyParser=require('body-parser')
 const creareError=require('http-errors')
 const helmet=require('helmet')
+const http = require('http')
+const socket = require('./Services/ioSocket')
+
 require("dotenv").config();
 
-const app = express();
 
 // Route
 const JWTRoute=require('./Routes/JWT.router')
@@ -14,6 +16,12 @@ const shopRoute=require('./Routes/Shop.router')
 const veryfyRoute=require('./Routes/Nodemailer.router')
 const authRoute = require("./Routes/User.router");
 const redisRoute=require('./Routes/Redis.router');
+
+
+const app = express();
+
+const server=http.createServer(app)
+socket(server)
 
 
 const db=require('./Helpers/config')
@@ -40,7 +48,7 @@ app.use(function (req, res, next) {
 
 app.use(helmet())
 app.use(cors({
-    origin:"http://localhost:3000",
+    origin:process.env.CLIENT_HOST,
     exposedHeaders: 'Authorization',
     credentials: true,
 }))
@@ -71,8 +79,13 @@ app.use((err,req,res,next)=>{
     })
 })
 
+
+
+
+
 // var server = https.createServer({}, app);
 const PORT = process.env.AUTH_PORT;
-app.listen(PORT, () => {
+
+server.listen(PORT, () => {
     console.log(`Auth is running on https://localhost:${PORT}/`);
 });
