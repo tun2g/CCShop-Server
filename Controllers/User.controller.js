@@ -63,14 +63,14 @@ const userController={
             }
 
             //xóa refresh token cũ trong redis
-            const rf=req.cookies?.refreshToken
+            const rf=req.cookies?.refreshtoken
             rf&&redis.del(rf)
 
             const accessToken=await JWTController.generateAccessToken(user)
             const refreshToken=await JWTController.generateRefreshToken(user)
             
             redis.set(user.email,accessToken,"EX",process.env.JWT_ACCESS_KEY_TIME,redis.print)
-            
+         
             res.cookie("refreshtoken", refreshToken,{
                 path: "/",
                 maxAge:1000*60*60*24*30,
@@ -91,6 +91,7 @@ const userController={
                 if (err) throw err;
                 console.log(reply); // số lượng phần tử trong mảng
             });
+            
 
             res.json({status:'Login sucessfully',token:accessToken,user:user})
 
@@ -100,9 +101,18 @@ const userController={
     },
 
     userLogout: async(req,res)=>{
+        try {
+            const refreshToken=req.cookies?.refreshtoken
+        console.log('del',refreshToken)
+        
+        refreshToken&&redis.del(refreshToken)
         res.cookie('email', '', { expires: new Date(0) }); // Xóa cookie email
         res.cookie('refreshtoken', '', { expires: new Date(0) }); // Xóa cookie refreshToken
         res.send('Logged out successfully');
+        } catch (error) {
+          console.log(error)   
+        }
+        
     },
 
     userResetPassword:async(req,res)=>{
