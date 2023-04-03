@@ -43,6 +43,16 @@ const redisController={
             console.log(error)
         }
     }
+    ,
+    del:async(req,res)=>{
+        try {
+            const key=req.body.key
+            await redis.del(key)
+            res.json({message:"Xóa thông báo thành công"})
+        } catch (error) {
+            console.log(error)            
+        }
+    }
     
 }
 

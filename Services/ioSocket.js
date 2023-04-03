@@ -27,32 +27,82 @@ module.exports = (server) => {
         console.log(socket.id," leave room ", key)
         socket.leave(key)
     })
+
+    // use for notifying new Comment to post also
     socket.on("notifyMessage",async(data)=>{
         //gửi đến thông báo
-        const name=data.name
-        const str=await redis.get(data.receiver)
-        const listNotifications=JSON.parse(str)?JSON.parse(str):[]
-        listNotifications.push({
-            name:name,
-            sender:data.sender,
-            type:"message",
-            avatar:data.avatar
-        })
-        socket.nsp.in(data.receiver).emit("notifyMessage",{listNotifications})
-        redis.set(data.receiver,JSON.stringify(listNotifications))
+        if(data.receiver && data.sender ){
+            const name=data.name
+
+            // list notifications
+            /*
+                [
+                    {sender: , name: , avatar: , type:  }
+                    // type : "meesage" or "comment"
+                ] 
+             */
+            const str=await redis.get(data.receiver)
+            let listNotifications=JSON.parse(str)?JSON.parse(str):[]
+            
+            // number of notifications to reciever
+            /*
+                [
+                    {sender: , type: },
+                ]
+            */ 
+           const numberStr = await redis.get(`numberNotify${data.receiver}`)
+           let numberNotify = JSON.parse(numberStr)?JSON.parse(numberStr):[]
+           
+           //Filter array
+            for (let i= 0; i < numberNotify.length;i++){
+                if(numberNotify[i].sender===data.sender 
+                    && numberNotify[i].type===data.type)
+                {
+                    numberNotify.splice(i,1)
+                    break;
+                }
+            }
+
+            for (let i =0 ; i< listNotifications.length;i++) {
+                if (listNotifications[i].sender===data.sender &&
+                    listNotifications[i].type===data.type
+                    ){
+                    listNotifications.splice(i,1)
+                    break;
+                }
+            }
+            listNotifications.push({
+                name:name,
+                sender:data.sender,
+                type:data.type,
+                avatar:data.avatar,
+                product:data.product?data.product:""
+            })
+            numberNotify.push({
+                sender:data.sender,
+                type:data.type
+            })
+            listNotifications=listNotifications.reverse()
+            socket.nsp.in(data.receiver).emit("notifyMessage",{listNotifications})
+            redis.set(data.receiver,JSON.stringify(listNotifications))
+            redis.set(`numberNotify${data.receiver}`,JSON.stringify(numberNotify))
+        }
     })
     socket.on("message", async(data)=>{
-        // gửi đến chat
-        const room=roomFormat(data.sender,data.receiver)
-        const string= await redis.get(room)
-        const listMessages=JSON.parse(string)?JSON.parse(string):[]
-        listMessages.push({
-            message:data.message,
-            sender:data.sender,
-            receiver:data.receiver,
-        }) 
-        socket.nsp.in(room).emit("message",{listMessages})
-        redis.set(room,JSON.stringify(listMessages))
+        if(data.message && data.receiver) {
+            // gửi đến chat
+            const room=roomFormat(data.sender,data.receiver)
+            const string= await redis.get(room)
+            const listMessages=JSON.parse(string)?JSON.parse(string):[]
+            listMessages.push({
+                message:data.message,
+                sender:data.sender,
+                receiver:data.receiver,
+            }) 
+            socket.nsp.in(room).emit("message",{listMessages})
+            redis.set(room,JSON.stringify(listMessages))
+        }
+
     })
 
     socket.on('disconnect', () => {

@@ -9,5 +9,6 @@ route.post("/set",redisController.setKey)
 
 route.post('/redis-get',redisController.get)
 route.post('/redis-set',redisController.set)
+route.post('/redis-del',redisController.del)
 
 module.exports=route

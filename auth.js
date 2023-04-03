@@ -6,7 +6,6 @@ const creareError=require('http-errors')
 const helmet=require('helmet')
 const http = require('http')
 const socket = require('./Services/ioSocket')
-
 require("dotenv").config();
 
 
@@ -57,12 +56,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-
-
-app.get("/", (req, res, next) => {
-    res.writeHead(200);
-    res.end("hello world\n");
+app.get('/', (req, res) => {
+    res.send('Hello World');
 });
+
+
 app.use("/refresh",JWTRoute)
 app.use("/user", authRoute);
 app.use("/redis",redisRoute)
