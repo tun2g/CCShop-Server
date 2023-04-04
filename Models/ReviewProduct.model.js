@@ -20,8 +20,16 @@ const ReviewProductSchema= new mongoose.Schema({
     isReacted:{
         type:Boolean,
         default:false,
+    },
+    feedback:{
+        type:String
+    },
+    avatarshop:{
+        type:String
+    },
+    shopname:{
+        type:String
     }
-
 });
 
 module.exports=mongoose.model('ReviewProduct',ReviewProductSchema);

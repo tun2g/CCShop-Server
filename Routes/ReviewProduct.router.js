@@ -6,4 +6,6 @@ route.post('/:id',reviewProductController.postReview)
 
 route.get('/get/:id',reviewProductController.getReviewByProduct)
 
+route.post('/update/:id',reviewProductController.updateReview)
+
 module.exports=route

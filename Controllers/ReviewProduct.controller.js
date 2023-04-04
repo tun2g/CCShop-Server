@@ -36,6 +36,25 @@ const reviewProductController={
             
         }
     },
+    updateReview:async(req,res)=>{
+        try {
+            const _id=req.params.id
+            const {feedback,avatarshop,shopname,userid}=req.body
+            const updateReview= await ReviewProduct.findOne({productid:_id,userid})
+            updateReview.feedback=feedback
+            updateReview.avatarshop=avatarshop
+            updateReview.shopname=shopname
+            await updateReview.save()
+
+            res.send("Thêm phản hồi thành công")
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    },
+
+
     // API
     getReviewByProduct:async(req,res)=>{
         try {

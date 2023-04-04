@@ -33,7 +33,7 @@ module.exports = (server) => {
         //gửi đến thông báo
         if(data.receiver && data.sender ){
             const name=data.name
-
+            console.log(data.receiver)
             // list notifications
             /*
                 [
