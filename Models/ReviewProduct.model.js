@@ -30,6 +30,6 @@ const ReviewProductSchema= new mongoose.Schema({
     shopname:{
         type:String
     }
-});
+},{ timestamps: true });
 
 module.exports=mongoose.model('ReviewProduct',ReviewProductSchema);

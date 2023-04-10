@@ -103,7 +103,6 @@ const userController={
     userLogout: async(req,res)=>{
         try {
             const refreshToken=req.cookies?.refreshtoken
-            console.log('del',refreshToken)
             
             refreshToken&&redis.del(refreshToken)
             res.cookie('email', '', { expires: new Date(0) }); // Xóa cookie email

@@ -13,6 +13,4 @@ route.get('/get-cart-by-user/:key',cartController.getCartsByUser)
 
 route.get('/get-cart-by-shop/:key',cartController.getCartsByShop)
 
-
-
 module.exports=route

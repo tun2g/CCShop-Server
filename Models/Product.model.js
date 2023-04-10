@@ -9,17 +9,11 @@ const ProductSchema= new mongoose.Schema({
         type:String,
         require:true,
     },
-    information:{
-        type:String
-    },
     description:{
         type:String,
         require:true,
     },
-    detail:{
-        type:String,
-    },
-    descriptiondetail:{
+    introduction:{
         type:String,
     },
     size:{
@@ -40,7 +34,11 @@ const ProductSchema= new mongoose.Schema({
         type:String,
         require:true,
         ref:'Shop'
-    }
-});
+    },
+    rating:{
+        type:Number,
+        default:0,
+    },
+},{ timestamps: true });
 
 module.exports=mongoose.model('Product',ProductSchema);
