@@ -91,12 +91,15 @@ module.exports = (server) => {
         if(data.message && data.receiver) {
             // gửi đến chat
             const room=roomFormat(data.sender,data.receiver)
+
             const string= await redis.get(room)
+            
             const listMessages=JSON.parse(string)?JSON.parse(string):[]
             listMessages.push({
                 message:data.message,
                 sender:data.sender,
                 receiver:data.receiver,
+                time:data.time,
             }) 
             socket.nsp.in(room).emit("message",{listMessages})
             redis.set(room,JSON.stringify(listMessages))
